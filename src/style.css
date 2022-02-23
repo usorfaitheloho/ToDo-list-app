@@ -1,0 +1,47 @@
+body {
+  margin-top: 40px;
+}
+
+.add-task {
+  font-style: italic;
+}
+
+.custom-btn {
+  width: 100%;
+  font-weight: bold;
+}
+
+.todo-list {
+  list-style: none;
+}
+
+.todo-item {
+  padding: 10px;
+  font-weight: bold;
+}
+
+.card {
+  padding: 20px;
+  margin-bottom: 10px;
+  background: #fff;
+}
+
+.done {
+  text-decoration: line-through;
+}
+
+div.checker {
+  display: inline-block;
+  text-align: center;
+  width: 15px;
+  height: 15px;
+  position: relative;
+  margin-right: 10px;
+  padding: 0;
+  vertical-align: middle;
+}
+
+div.checker input {
+  width: 15px;
+  height: 15px;
+}
