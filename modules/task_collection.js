@@ -19,14 +19,14 @@ export default class TaskCollection {
 
 
        ref.domList.innerHTML =`${ref.domList.innerHTML} <li class ="todo-item">
-       <div class="checker"><span class =""><input class = list-check-${element.index}" type = "checkbox"></span></div>
+       <div class="checker"><span class =""><input class = "list-check-${element.index}" type = "checkbox"></span></div>
        <span class= "${completed}"> ${element.description}</span>
        <i class="fa fa-trash-o float-right"></i>
        </li>`;
        }, ref);
 
        this.collection.forEach((element) => {
-           const checkList = document.querySelector('.list-check-${element.index}');
+           const checkList = document.querySelector(`.list-check-${element.index}`);
            checkList.checked = false;
            if (element.completed){
                checkList.checked = true;
