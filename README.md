@@ -7,6 +7,7 @@ Our goal here is to Build a book application with add and remove feature from sc
 
 ![screenshot](images/screenshot-1.PNG)
 ![screenshot](images/screenshot-2.PNG)
+![screenshot](images/screenshot-3.PNG)
 
 ## Features implemented so far
 - Add book feature
