@@ -1,37 +1,123 @@
-export default class TaskCollection {
-    static counter = 0;
+class TaskCollection {
     constructor() {
-        this.domList = document.querySelector('.todo-list');
-        this.collection = [
-        {description: "This is Task 1 with bigger length!",completed: true,index: 1,},
-        {description: "Task 2",completed: true,index: 2,},
-        {description: "Task 3", completed: true, index: 3,},
-        { description: "Task 4", completed: true, index: 4, },
-        {description: "Task 5", completed: true,index: 5,},
-        {description: "Task 6", completed: false,index: 6,},
-      ];
-      const ref = this;
-       this.collection.forEach((element) =>{
-           let completed = '';
-           if (element.completed){
-               completed = 'done';
-           }
-
-
-       ref.domList.innerHTML =`${ref.domList.innerHTML} <li class ="todo-item">
-       <div class="checker"><span class =""><input class = "list-check-${element.index}" type = "checkbox"></span></div>
-       <span class= "${completed}"> ${element.description}</span>
-       <i class="fa fa-trash-o float-right"></i>
-       </li>`;
-       }, ref);
-
-       this.collection.forEach((element) => {
-           const checkList = document.querySelector(`.list-check-${element.index}`);
-           checkList.checked = false;
-           if (element.completed){
-               checkList.checked = true;
-           }
-       });
-      
+      this.addTask = document.querySelector('.add-task');
+      this.domList = document.querySelector('.todo-list');
+      this.collection = [];
     }
-}
+    initApp = () => {
+      this.onLoadList();
+      this.updateDom();
+    }
+    updateDom = () => {
+      const ref = this;
+      this.domList.innerHTML = '';
+      this.collection.forEach((element) => {
+        let completed = '';
+        if (element.completed) {
+          completed = 'done';
+        }
+        ref.domList.innerHTML = `${ref.domList.innerHTML} <li class="todo-item">
+        <div class="checker"><span class=""><input class="list-check-${element.index}" type="checkbox"></span></div>
+        <span class="${completed} desc" contentEditable="true">${element.description}</span>
+        <i class="fa fa-trash-o float-right delete"></i>
+        </li>`;
+      }, ref);
+      this.collection.forEach((element) => {
+        const checkList = document.querySelector(`.list-check-${element.index}`);
+        checkList.checked = false;
+        if (element.completed) {
+          checkList.checked = true;
+        }
+      });
+      this.eventDispatcher();
+    }
+    eventDispatcher = () => {
+      this.onclickeventDispatcher();
+      this.onsubmiteventDispatcher();
+      this.onediteventDispatcher();
+    }
+    onclickeventDispatcher = () => {
+      const buttons = document.querySelectorAll('.delete');
+      const ref = this;
+      buttons.forEach((button, index) => {
+        button.addEventListener('click', (event) => {
+          const eventIdentifier = event.currentTarget;
+          const localArray = [];
+          let count = 1;
+          eventIdentifier.ref.collection.forEach((element, i) => {
+            if (i !== eventIdentifier.index) {
+              eventIdentifier.ref.collection[i].index = count;
+              localArray.push(eventIdentifier.ref.collection[i]);
+              count += 1;
+            }
+          });
+          eventIdentifier.ref.collection = localArray;
+          eventIdentifier.ref.onSaveList();
+          ref.updateDom();
+        });
+        button.index = index;
+        button.ref = ref;
+      }, ref);
+    }
+    onsubmiteventDispatcher = () => {
+      this.addTask.addEventListener('keyup', (event) => {
+        if (event.keyCode !== 13) {
+          return;
+        }
+        const input = event.currentTarget.ref.addTask.value;
+        if (!input.replace(/\s/g, '').length || input.length <= 0) {
+          return;
+        }
+  
+        if (event.keyCode === 13) {
+          event.currentTarget.ref.collection.push({
+            index: (event.currentTarget.ref.collection.length + 1), description: input, completed: false,
+          });
+  
+          event.currentTarget.ref.onSaveList();
+          event.currentTarget.ref.addTask.value = '';
+        }
+        event.currentTarget.ref.updateDom();
+        event.preventDefault();
+      });
+      this.addTask.ref = this;
+    }
+    onediteventDispatcher = () => {
+      const ref = this;
+      const listDesc = document.querySelectorAll('.desc');
+      listDesc.forEach((desc, index) => {
+        desc.addEventListener('keyup', (event) => {    
+          if (event.keyCode !== 13) {
+            return;
+          }
+  
+          const refObj = event.currentTarget;
+          let input = refObj.value.innerHTML;
+          refObj.value.innerHTML = input.replace('<br>', '');
+          input = refObj.value.innerHTML;
+          if (!input.replace(/\s/g, '').length || input.length <= 0) {
+            return;
+          }
+          if (refObj.value.innerHTML !== refObj.ref.collection[refObj.index].description) {
+            refObj.value.innerHTML = input.replace('<br>', '');
+            refObj.ref.collection[refObj.index].description = refObj.value.innerHTML;
+            refObj.ref.onSaveList();
+            refObj.value.blur();
+          }
+        });
+        desc.index = index;
+        desc.ref = ref;
+        desc.value = desc;
+      }, ref);
+    }
+    onSaveList = () => {
+      localStorage.setItem('application_config', JSON.stringify(this.collection));
+    }
+    onLoadList = () => {
+      if (localStorage.getItem('application_config') != null) {
+        this.collection = JSON.parse(localStorage.getItem('application_config'));
+      }
+    }
+  }
+  
+  export default TaskCollection;
