@@ -17,7 +17,7 @@ class TaskCollection {
           completed = 'done';
         }
         ref.domList.innerHTML = `${ref.domList.innerHTML} <li class="todo-item">
-        <div class="checker"><span class=""><input class="list-check-${element.index}" type="checkbox"></span></div>
+        <div class="checker"><span class=""><input class="list-check-${element.index} action_check" type="checkbox"></span></div>
         <span class="${completed} desc" contentEditable="true">${element.description}</span>
         <i class="fa fa-trash-o float-right delete"></i>
         </li>`;
@@ -58,7 +58,41 @@ class TaskCollection {
         button.index = index;
         button.ref = ref;
       }, ref);
+      const checks = document.querySelectorAll('.action_check');
+      checks.forEach((check,index) =>{
+
+        check.addEventListener('click',(event) =>{
+          const refObj = event.currentTarget;
+          if(refObj.ref.collection[refObj.index].completed){
+            refObj.ref.collection[refObj.index].completed = false;
+          }
+          else {
+            refObj.ref.collection[refObj.index].completed = true;
+          }
+          refObj.ref.onSaveList();
+          ref.updateDom();
+
+        });
+        check.index =index;
+        check.ref = ref ;
+      },ref);
+
+      const clearBtn = document.querySelector('.custom-btn');
+      clearBtn.addEventListener('click',(event)=>{
+        const refObj = event.currentTarget;
+        const filteredTasks = refObj.ref.collection.filter((item) =>{
+          const state = item.completed == false;
+          return state;
+        });
+        refObj.ref.collection = filteredTasks;
+        refObj.ref.onSaveList();
+          ref.updateDom();
+      });
+      clearBtn.ref = this;
+
     }
+    
+
     onsubmiteventDispatcher = () => {
       this.addTask.addEventListener('keyup', (event) => {
         if (event.keyCode !== 13) {
