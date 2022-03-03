@@ -51,8 +51,20 @@ describe("Add to list", () => {
     const list = document.querySelectorAll(".todo-list li");
     expect(list).toHaveLength(3);
   });
-
   test("Test case 5", () => {
+    document.body.innerHTML =
+      "<div>" + '  <ul class="todo-list"></ul>' + "</div>";
+
+    const Test = new TaskCollection(true);
+    Test.addTaskToList("TaskTest_4 of Example-1");
+    Test.addTaskToList("TaskTest_4 of Example-2");
+    Test.addTaskToList("TaskTest_4 of Example-3");
+    expect(Test.onLoadList()).not.toBeUndefined();
+    const list = document.querySelectorAll(".todo-list li");
+    expect(list).toHaveLength(3);
+  });
+
+  test("Test case 6", () => {
     document.body.innerHTML =
       "<div>" + '  <ul class="todo-list"></ul>' + "</div>";
 
@@ -61,14 +73,15 @@ describe("Add to list", () => {
     Test.addTaskToList("TaskTest_5 of Example-2");
     Test.addTaskToList("TaskTest_5 of Example-3");
     Test.addTaskToList("TaskTest_5 of Example-3");
-    expect(Test.onSaveList()).not.toBeUndefined();
+    expect(Test.onLoadList()).not.toBeUndefined();
+    expect(Test.onLoadList()).toHaveLength(4);
     const list = document.querySelectorAll(".todo-list li");
     expect(list).toHaveLength(4);
   });
 });
 
 describe("Delete from list", () => {
-  test("Test case 6", () => {
+  test("Test case 7", () => {
     document.body.innerHTML =
       "<div>" + '  <ul class="todo-list"></ul>' + "</div>";
 
@@ -78,24 +91,26 @@ describe("Delete from list", () => {
     Test.deleteTask(0);
     Test.addTaskToList("TaskTest_1 of Example-3");
     Test.deleteTask(1);
-    expect(Test.onSaveList()).not.toBeUndefined();
+    expect(Test.onLoadList()).not.toBeUndefined();
+    expect(Test.onLoadList()).toHaveLength(1);
     const list = document.querySelectorAll(".todo-list li");
     expect(list).toHaveLength(1);
   });
 
-  test("Test case 7", () => {
+  test("Test case 8", () => {
     document.body.innerHTML =
       "<div>" + '  <ul class="todo-list"></ul>' + "</div>";
 
     const Test = new TaskCollection(true);
     Test.addTaskToList("TaskTest_2 of Example-1");
     Test.deleteTask(0);
-    expect(Test.onSaveList()).not.toBeUndefined();
+    expect(Test.onLoadList()).not.toBeUndefined();
+    expect(Test.onLoadList()).toHaveLength(0);
     const list = document.querySelectorAll(".todo-list li");
     expect(list).toHaveLength(0);
   });
 
-  test("Test case 8", () => {
+  test("Test case 9", () => {
     document.body.innerHTML =
       "<div>" + '  <ul class="todo-list"></ul>' + "</div>";
 
@@ -113,7 +128,7 @@ describe("Delete from list", () => {
     expect(list).toHaveLength(2);
   });
 
-  test("Test case 9", () => {
+  test("Test case 10", () => {
     document.body.innerHTML =
       "<div>" + '  <ul class="todo-list"></ul>' + "</div>";
 
@@ -127,7 +142,7 @@ describe("Delete from list", () => {
     expect(list).toHaveLength(2);
   });
 
-  test("Test case 10", () => {
+  test("Test case 11", () => {
     document.body.innerHTML =
       "<div>" + '  <ul class="todo-list"></ul>' + "</div>";
 
