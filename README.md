@@ -3,7 +3,7 @@
 
 This is a microverse project that allows users to update tasks from a list using javascript modules
 
-Our goal here is to Build a book application with add and remove feature from scratch using JavaScripts... click [here] (https://usorfaitheloho.github.io/ToDo-list-app/) to see deployed live version
+Our goal here is to Build a book application with add and remove feature from scratch using JavaScripts... click [here] (https://usorfaitheloho.github.io/ToDo-list-app/dist) to see deployed live version
 
 ![screenshot](images/screenshot-1.PNG)
 ![screenshot](images/screenshot-2.PNG)

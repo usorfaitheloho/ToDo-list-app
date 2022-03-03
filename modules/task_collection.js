@@ -1,12 +1,67 @@
 class TaskCollection {
-    constructor() {
+    constructor(isTest = false) {
       this.addTask = document.querySelector('.add-task');
       this.domList = document.querySelector('.todo-list');
       this.collection = [];
+      this.localStorageStringInstance = 'application_config';
+      this.testMode = isTest;
     }
+
     initApp = () => {
       this.onLoadList();
       this.updateDom();
+    }
+
+    addTaskToList = (inputTask) => {
+      this.collection.push({
+        index: (this.collection.length + 1), description: inputTask, completed: false,
+      });
+  
+      this.onSaveList();
+      this.updateDom();
+    }
+  
+    deleteTask = (deleteIndex) => {
+      const localArray = [];
+      let count = 1;
+      this.collection.forEach((element, i) => {
+        if (i !== deleteIndex) {
+          this.collection[i].index = count;
+          localArray.push(this.collection[i]);
+          count += 1;
+        }
+      });
+      this.collection = localArray;
+      this.onSaveList();
+      this.updateDom();
+    }
+    editTaskList = (index, word) => {
+      if (index < this.collection.length) {
+        this.collection[index].description = word;
+        this.onSaveList();
+      }
+  
+      return this.collection[index].description;
+    }
+  
+    checkTask = (index, status) => {
+      if (index < this.collection.length) {
+        this.collection[index].completed = !status;
+        this.onSaveList();
+      }
+  
+      return this.collection[index].completed;
+    }
+  
+    clearAllChecked = () => {
+      const filteredTasks = this.collection.filter((item) => {
+        const state = item.completed === false;
+        return state;
+      });
+      this.collection = filteredTasks;
+      this.onSaveList();
+  
+      return this.collection === filteredTasks;
     }
     updateDom = () => {
       const ref = this;
@@ -29,68 +84,50 @@ class TaskCollection {
           checkList.checked = true;
         }
       });
-      this.eventDispatcher();
+      if (this.testMode === false) {
+        this.eventDispatcher();
+      }
     }
     eventDispatcher = () => {
       this.onclickeventDispatcher();
       this.onsubmiteventDispatcher();
       this.onediteventDispatcher();
     }
+   
     onclickeventDispatcher = () => {
+      // delete task
       const buttons = document.querySelectorAll('.delete');
       const ref = this;
       buttons.forEach((button, index) => {
         button.addEventListener('click', (event) => {
           const eventIdentifier = event.currentTarget;
-          const localArray = [];
-          let count = 1;
-          eventIdentifier.ref.collection.forEach((element, i) => {
-            if (i !== eventIdentifier.index) {
-              eventIdentifier.ref.collection[i].index = count;
-              localArray.push(eventIdentifier.ref.collection[i]);
-              count += 1;
-            }
-          });
-          eventIdentifier.ref.collection = localArray;
-          eventIdentifier.ref.onSaveList();
-          ref.updateDom();
+          eventIdentifier.ref.deleteTask(eventIdentifier.index);
         });
         button.index = index;
         button.ref = ref;
       }, ref);
+  
+      // check task
       const checks = document.querySelectorAll('.action_check');
-      checks.forEach((check,index) =>{
-
-        check.addEventListener('click',(event) =>{
+      checks.forEach((check, index) => {
+        check.addEventListener('click', (event) => {
           const refObj = event.currentTarget;
-          if(refObj.ref.collection[refObj.index].completed){
-            refObj.ref.collection[refObj.index].completed = false;
-          }
-          else {
-            refObj.ref.collection[refObj.index].completed = true;
-          }
-          refObj.ref.onSaveList();
+          this.checkTask(refObj.index, refObj.ref.todoList[refObj.index].completed);
           ref.updateDom();
-
         });
-        check.index =index;
-        check.ref = ref ;
-      },ref);
-
+        check.index = index;
+        check.ref = ref;
+      }, ref);
+  
+      // clear all completed
       const clearBtn = document.querySelector('.custom-btn');
-      clearBtn.addEventListener('click',(event)=>{
-        const refObj = event.currentTarget;
-        const filteredTasks = refObj.ref.collection.filter((item) =>{
-          const state = item.completed == false;
-          return state;
-        });
-        refObj.ref.collection = filteredTasks;
-        refObj.ref.onSaveList();
-          ref.updateDom();
+      clearBtn.addEventListener('click', () => {
+        this.clearAllChecked();
+        ref.updateDom();
       });
       clearBtn.ref = this;
-
     }
+  
     
 
     onsubmiteventDispatcher = () => {
@@ -104,14 +141,9 @@ class TaskCollection {
         }
   
         if (event.keyCode === 13) {
-          event.currentTarget.ref.collection.push({
-            index: (event.currentTarget.ref.collection.length + 1), description: input, completed: false,
-          });
-  
-          event.currentTarget.ref.onSaveList();
+          event.currentTarget.ref.addTaskToList(input);
           event.currentTarget.ref.addTask.value = '';
         }
-        event.currentTarget.ref.updateDom();
         event.preventDefault();
       });
       this.addTask.ref = this;
@@ -120,7 +152,7 @@ class TaskCollection {
       const ref = this;
       const listDesc = document.querySelectorAll('.desc');
       listDesc.forEach((desc, index) => {
-        desc.addEventListener('keyup', (event) => {    
+        desc.addEventListener('keyup', (event) => {
           if (event.keyCode !== 13) {
             return;
           }
@@ -132,11 +164,18 @@ class TaskCollection {
           if (!input.replace(/\s/g, '').length || input.length <= 0) {
             return;
           }
-          if (refObj.value.innerHTML !== refObj.ref.collection[refObj.index].description) {
+  
+          if (refObj.value.innerHTML !== refObj.ref.todoList[refObj.index].description) {
             refObj.value.innerHTML = input.replace('<br>', '');
-            refObj.ref.collection[refObj.index].description = refObj.value.innerHTML;
-            refObj.ref.onSaveList();
+            this.editTaskList(refObj.index, refObj.value.innerHTML);
             refObj.value.blur();
+          }
+        });
+  
+        desc.addEventListener('focusout', (event) => {
+          const refObj = event.currentTarget;
+          if (refObj.value.innerHTML !== refObj.ref.todoList[refObj.index].description) {
+            this.editTaskList(refObj.index, refObj.value.innerHTML);
           }
         });
         desc.index = index;
@@ -145,12 +184,18 @@ class TaskCollection {
       }, ref);
     }
     onSaveList = () => {
-      localStorage.setItem('application_config', JSON.stringify(this.collection));
+      if (this.testMode === false) {
+        localStorage.setItem(this.localStorageStringInstance, JSON.stringify(this.collection));
+      }
+      return this.collection;
     }
     onLoadList = () => {
-      if (localStorage.getItem('application_config') != null) {
-        this.collection = JSON.parse(localStorage.getItem('application_config'));
+      if (this.testMode === false) {
+        if (localStorage.getItem(this.localStorageStringInstance) != null) {
+          this.collection = JSON.parse(localStorage.getItem(this.localStorageStringInstance));
+        }
       }
+      return this.collection;
     }
   }
   
