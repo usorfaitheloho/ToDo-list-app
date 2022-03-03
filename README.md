@@ -1,6 +1,6 @@
 # ToDo-list App
 
-
+![](https://img.shields.io/badge/Microverse-blueviolet)
 This is a microverse project that allows users to update tasks from a list using javascript modules
 
 Our goal here is to Build a book application with add and remove feature from scratch using JavaScripts... click [here] (https://usorfaitheloho.github.io/ToDo-list-app/dist) to see deployed live version
@@ -36,24 +36,43 @@ To get a local copy up and running follow these simple example steps.
 - git clone https://github.com/usorfaitheloho/ToDo-list-app.git
 
 
-## Getting packages and dependencies
-To get all package modules required to build the project run:
-```
+cd To-Do-list-Application
 npm install
+npm run start
 ```
-every package module required to build the project is listed in the package.json file. this is used as a reference to get all dependencies.
-## Building 
-To build the project run:
+## Getting packages and debuging with Stylelint
 ```
-npm run-script build
+npm install --save-dev stylelint@13.x stylelint-scss@3.x stylelint-config-standard@21.x stylelint-csstree-validator@1.x
 ```
-after you run this sucessfully you'd locate the build from in the ```dist``` folder located from the parent directory of the project. two files are being built which are, ```core.js and index.html``
-## Running
-To run the program on a browser through a server run this command in your cli
+##### For validation detection using Stylelint Run
 ```
-npm start
+npx stylelint "**/*.{css,scss}"
 ```
-This should open the page in your localhost on port 8080. then you'd be able to view the built page generated using webpack.
+##### from parent source directory
+## Getting packages and debuging with ESlint
+```
+npm install npm install --save-dev eslint@7.x eslint-config-airbnb-base@14.x eslint-plugin-import@2.x babel-eslint@10.x
+```
+##### For validation detection using Stylelint Run
+```
+npx eslint .
+```
+##### from parent source directory
+## Getting packages and debuging with Webhint
+```
+npm init -y
+npm install --save-dev hint@6.x
+```
+##### For validation detection using Webhint Run
+```
+npx hint .
+```
+## Unit Testing
+You can find each unit test cases in the Test folder located in the parent source directory of the project. you can create your own custom unit test and test it by running
+```
+npx run test
+```
+This should run all unit test found in the application.test.js from the Test folder.
 
 
 ## Authors
