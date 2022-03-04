@@ -1,5 +1,5 @@
 class TaskCollection {
-  constructor(isTest = false) {
+    constructor(isTest = false) {
     this.addTask = document.querySelector('.add-task');
     this.domList = document.querySelector('.todo-list');
     this.todoList = [];
@@ -36,7 +36,35 @@ class TaskCollection {
     this.updateDom();
   }
 
-  
+  editTaskList = (index, word) => {
+    if (index < this.todoList.length) {
+      this.todoList[index].description = word;
+      this.onSaveList();
+    }
+
+    return this.todoList[index].description;
+  }
+
+  checkTask = (index, status) => {
+    if (index < this.todoList.length) {
+      this.todoList[index].completed = !status;
+      this.onSaveList();
+    }
+
+    return this.todoList[index].completed;
+  }
+
+  clearAllChecked = () => {
+    const filteredTasks = this.todoList.filter((item) => {
+      const state = item.completed === false;
+      return state;
+    });
+    this.todoList = filteredTasks;
+    this.onSaveList();
+
+    return this.todoList === filteredTasks;
+  }
+
   updateDom = () => {
     const ref = this;
     this.domList.innerHTML = '';
@@ -147,6 +175,13 @@ class TaskCollection {
           refObj.value.innerHTML = input.replace('<br>', '');
           this.editTaskList(refObj.index, refObj.value.innerHTML);
           refObj.value.blur();
+        }
+      });
+
+      desc.addEventListener('focusout', (event) => {
+        const refObj = event.currentTarget;
+        if (refObj.value.innerHTML !== refObj.ref.todoList[refObj.index].description) {
+          this.editTaskList(refObj.index, refObj.value.innerHTML);
         }
       });
 
